@@ -79,6 +79,7 @@ parallels@ubuntu:~/PycharmProjects/quantum/bin$ ftp_test --cfg_file put_tests.cf
 
 **Adding or Removing test cases**
 User can add new test cases in two ways. 
+
 1. Add in python test suite. refer config_files/DefaultTestSuite.py
 THis is recommended way to scale up using python. Just need to pass different parameters FtpPutTest.
 We can generate custom data files and test it's upload, easy to scale, pythonic way to add parameters.
