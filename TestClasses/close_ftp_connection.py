@@ -1,4 +1,7 @@
 class TestCloseFTPConnection(object):
+    """
+    This class contains method and attributes to close the ftp connection. Even though its not explicitly needed.
+    """
     def __init__(self, session):
         self._session = session
 

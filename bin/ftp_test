@@ -1,24 +1,27 @@
 #!/usr/bin/python
 import argparse
-from TestClasses.TestUtils import DEFAULT_PASSWORD, DEFAULT_USER, DEFAULT_PORT, DEFAULT_HOSTNAME
-from TestClasses.TestUtils import get_str
+from TestClasses.test_utils import DEFAULT_PASSWORD, DEFAULT_USER, DEFAULT_PORT, DEFAULT_HOSTNAME
 from TestClasses.test_set_up import TestSetUp
-from TestClasses.run_all_tests import RunAllTests
+from config_files.DefaultTestSuite import DefaultTestSuite
 from TestClasses.close_ftp_connection import TestCloseFTPConnection
+from Driver.ConfigFileParser import ConfigFileParser
+from Driver.TestRunner import TestRunner
 
 
 parser = argparse.ArgumentParser(description='Process arguments for FTP put tests.')
-parser.add_argument('--verbose', dest='verbose', action='store_true', help="Print logs on terminal.")
+parser.add_argument('--cfg_file', default=None, dest="cfg_file", help="Name of cfg file with tests. If not defined by default all the testcases in run_all_tests.py will run.")
+parser.add_argument('--repeat_times', type=int, dest="repeat_times", default=1, help="Run tests multiple times.")
 parser.add_argument('--failfast', dest='failfast', action='store_true', help="Exit after first failure.")
-parser.add_argument('-hostname', type=str, dest="hostname", default=DEFAULT_HOSTNAME, help="Host name of ftp server.")
-parser.add_argument('-port', type=int, dest="port", default=DEFAULT_PORT, help="Port number at which ftp server runs.")
-parser.add_argument('-user', type=str, dest="user", default=DEFAULT_USER, help="Name of the user.")
-parser.add_argument('-password', type=str, dest="password", default=DEFAULT_PASSWORD, help="Password for FTP server.")
-parser.add_argument('-repeat_times', type=int, dest="repeat_times", default=1, help="Run tests multiple times.")
+parser.add_argument('--hostname', type=str, dest="hostname", default=DEFAULT_HOSTNAME, help="Host name of ftp server.")
+parser.add_argument('--port', type=int, dest="port", default=DEFAULT_PORT, help="Port number at which ftp server runs.")
+parser.add_argument('--user', type=str, dest="user", default=DEFAULT_USER, help="Name of the user.")
+parser.add_argument('--password', type=str, dest="password", default=DEFAULT_PASSWORD, help="Password for FTP server.")
 
 args = parser.parse_args()
-for i in range(1, args.repeat_times+1):
-    print "Running tests {} time.".format(get_str(i))
-    ftp_connection = TestSetUp(hostname=args.hostname, user=args.user, password=args.password, port=args.port).setup_test()
-    RunAllTests(ftp_connection).run_tests()
-    TestCloseFTPConnection(ftp_connection).close_session()
+ftp_connection = TestSetUp(hostname=args.hostname, user=args.user, password=args.password, port=args.port).setup_test()
+if args.cfg_file:
+    test_suite = ConfigFileParser(args.cfg_file).parse_cfg()
+else:
+    test_suite = DefaultTestSuite(ftp_connection).create_test_suite()
+TestRunner(test_suite, failfast=args.failfast, repeat_times=args.repeat_times)
+TestCloseFTPConnection(ftp_connection).close_session()

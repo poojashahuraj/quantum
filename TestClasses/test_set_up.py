@@ -2,8 +2,9 @@ from TestClasses.get_ftp_connection import TestGetFTPConnection
 
 
 class TestSetUp(object):
-    ftp_connection = None
-
+    """
+    This class contains methods and attributes to set up tests, returns ftp connection.
+    """
     def __init__(self, hostname, user, password, port):
         self._hostname = hostname
         self._user = user

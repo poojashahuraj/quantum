@@ -1,5 +1,6 @@
 import psutil
 import os
+import sys
 
 WELCOME_TXT = "220 Welcome to Paradise"
 PROCESS_NAME = "paradise_ftp"
@@ -7,6 +8,7 @@ DEFAULT_USER = "user"
 DEFAULT_PASSWORD = "secret"
 DEFAULT_PORT = 2121
 DEFAULT_HOSTNAME = "localhost"
+DEFAULT_CFG_DIR = os.path.join(os.getcwd(), "../config_files/")
 
 
 def get_pid(process_name):
@@ -32,6 +34,10 @@ def generate_file(file_name, content):
 
 def delete_generated_file(file_name):
     os.remove(file_name)
+
+
+def sys_exit(return_code):
+    sys.exit(return_code)
 
 
 def get_str(n):
